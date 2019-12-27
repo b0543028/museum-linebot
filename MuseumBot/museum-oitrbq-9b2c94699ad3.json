@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "museum-oitrbq",
+  "private_key_id": "9b2c94699ad348a22656937eda641ac0d12e73c1",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC1i5M0V7HLqLhr\nEM5xqCwWdhpMzi8gC1RBUEoEGH2Z0vwDZ56AMoM5L8fQlxtX1aFNHUKY0gNCvAJU\n1PQfvhdtHEO1yFfFwBfwG5mNnoWfpFxOCKyUwsDYTeMzVL3bjuLJO88VS7F/O8R4\nlTTaiuq85ZNw7vJhQa5WC+Ec+RkcbDYS4YxbF9CUcGDzM4/+hr55N9bDQueJYEZH\nc1iB6i12G5JuzyLjpMXMMUaRlI+TDsRnZ2OT9jNYoO1WPtsvaqU2f/CealqCBlWu\npL5FetQGqt/df9PogKm7lhZMxNmk7Bz9MoHchrmoVwvEFKkyoIia5mNrTYrmNrRy\nDsfMwvXjAgMBAAECggEAT6V8X2pZxk+vGMm2yIZPUUtfHnMWmahevojK8CEOeX3m\nslezYerHRz9/GjQw+sfujDZaEVGRvKVfIHiM4aA0BtpvmkDawRcVaXGyXD8/wFoL\nZPDJRjprAHqrQsnawYheVoq2v1EF/hvqhjxvg7GOanENzm4GSETYh0eO63cdXSof\nJRRz6BnWmLlUOddwRqDKyNnwzUji/vW5XcoSaIEAxw1ifQ8fw/Pa32zJ5UAkUQtc\nAdVY7wsbFPrI23usaAclQEKiskSFaysynX3lLQ+uNosUDrxf+X0pZghHm+hwUyrY\nIKPCMRcbpqL0WFW8nMloyungh7l4LwI6X0ay2Gt8gQKBgQDY310aHRep96Ye+OOo\nOFQPcTy2P5fXH0deKtWQNk4ZcbsCDWvcRdq8brPKayZEhlx8unOqsu9msaWBI995\nbz6Mv70vLLCkf2k5/Ein2lvAevWlaJEJS0Hs+U1WjJ2rM9ujj72TaftZgoL0oRf3\ndAyycoUmeDTlDoFNJknh5fPJjQKBgQDWTI7og6713lJ576qP5NE6jkdByRouHl+i\nj2iAMBWn9gFQ5JQq86j/FDKcU+21mU6VoELVeWwj+rI3tz9CF3foiBIUT+Xyju5U\ndfPIibT8aW9UJ5LGJVHNHQQavrpgMv61cXt1mTXtxdK14PBBmzGh1igm/x3G9dE9\n+CLClFcJLwKBgQDB4xeaRA4m73e90ue9Ofa1A5iymrIGKjmkz4i08EfsaYg2MoeO\nm4kN0667NgY1VyYSgKLuJiDv37xGcyrUpwb10GmzZjHaLuqFY64VGpvSvlsk8RJR\ni825rbxdt0Myjx864EQtKaAECzFGwUrq+P5s/wNZPDiV29zve16sLehA9QKBgEO0\nAj5BRChXadUuO8OkNdn7E1YcU9IYNHymNAyzpFPhK79Dx+/d9RlJZ0fuWB5UZfht\nnk/VQa4ISP/DPBAEXBSx0IxsRaihMXirny5PG0fXg52htwQ0zCgyL5bHhRhZZBEs\n3iVkFx6crhpaC22eu0p2306asOynwsiCOXEh7nFvAoGAAzL7yXc05REGQ+gBq7zM\n+zTc+pxUrwNeevu6P8rpCzmaxjNXfBac3nMHl/hs1J/NfK/JOPKuFDnKRlZdh3nN\niQH2lrDov40e4kArmTqoLq7J5Wp3K+pvzX3Kqxxx+TOvS67+HPRqpS5S6FXyWseB\nNraZVVMSO3TamloCjJTx9q8=\n-----END PRIVATE KEY-----\n",
+  "client_email": "dialogflow-vxghyj@museum-oitrbq.iam.gserviceaccount.com",
+  "client_id": "111744656034153833339",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/dialogflow-vxghyj%40museum-oitrbq.iam.gserviceaccount.com"
+}
