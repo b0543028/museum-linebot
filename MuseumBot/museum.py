@@ -24,7 +24,7 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 
 #以下為使用者使用Google提供的Firebase所需要的金鑰
-cred = credentials.Certificate('museum-oitrbq-firebase-adminsdk-7rcxw-f576936f4f.json')
+cred = credentials.Certificate('FIREBASE_API_KEY')
 firebase_admin.initialize_app(cred)
 
 #宣告Firebase的客戶端Client
@@ -33,28 +33,32 @@ db = firestore.client()
 # 導入googlemaps的套件
 import googlemaps
 
-# 導入Google Cloud Client的函式庫
+# 導入Google Cloud Client的函示庫
 import google.cloud
 
 import datetime,pytz,random,os,tempfile,errno
 
 # Dialogflow的API
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "museum-oitrbq-9b2c94699ad3.json"
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "DIALOG_API_KEY"
 from math import *
 # 宣告我們的時區
 tz = pytz.timezone('Asia/Taipei')
+
+#將m4a語音專程wav語音時專用
+from pydub import AudioSegment
+import soundfile
 
 global beacon_id
 beacon_id = 0
 
 # 註冊googlemap的API的client
-gmaps = googlemaps.Client(key='AIzaSyChFb0OiE_agkWll_LEv-x6nXMGIAMBS48')
+gmaps = googlemaps.Client(key='GOOGLE_MAP_API_KEY')
 
 app = Flask(__name__)
 
-line_bot_api = LineBotApi('ZMUpn2lhDomb4ravrj4Lcc/QICm3Y2rkUHcOlLTda8mGmfMTc0DJ2hiQ04v9AOXZj6TRHvKsdabyfJpnr7R0PkJRjnm0DnOORjJryJgm8/Q7t8SU4RlgamSDU7ZpjfjEHYjzsxVNg83htD7wGCXikwdB04t89/1O/w1cDnyilFU=')
-handler = WebhookHandler('42daa984aa1770b8c037206ede8f7b36')
-liff_api = LIFF('ZMUpn2lhDomb4ravrj4Lcc/QICm3Y2rkUHcOlLTda8mGmfMTc0DJ2hiQ04v9AOXZj6TRHvKsdabyfJpnr7R0PkJRjnm0DnOORjJryJgm8/Q7t8SU4RlgamSDU7ZpjfjEHYjzsxVNg83htD7wGCXikwdB04t89/1O/w1cDnyilFU=')
+line_bot_api = LineBotApi('CHANNEL_ACCESS_TOKEN')
+handler = WebhookHandler('LINE_CHANNEL_SECRET')
+liff_api = LIFF('CHANNEL_ACCESS_TOKEN')
 
 static_tmp_path = os.path.join(os.path.dirname(__file__), 'static', 'tmp')
 Yilan_list = ['羅東','礁溪','宜蘭']
@@ -69,6 +73,16 @@ def make_static_tmp_dir():
         else:
             raise
 
+#****m4a轉wav 16 bits****#
+def m4a_to_wav(filename):
+    src = filename
+    dst = filename.replace('.m4a','.wav')
+    sound = AudioSegment.from_file(src)
+    sound.export(dst, format="wav")
+    data, samplerate = soundfile.read(dst)
+    soundfile.write(dst, data, samplerate, subtype='PCM_16')
+    return dst
+
 #****使用者不知道可以問什麼的時候的攻略****#
 def get_help(user_token):
     Text = '您好！我是蘭博導覽小助手'+\
@@ -77,8 +91,12 @@ def get_help(user_token):
     '\n・入館需要注意什麼？\n・博物館的票價資訊\n・如何租借語音導覽？\n・如何租借輪椅車？\n・蘭陽博物館的開館時間...\n'+\
     '\n「導覽資訊」'+\
     '\n・蘭陽博物館在哪裡？\n・在蘭陽博物館可以看什麼？...\n'+\
+    '\n「活動消息」'+\
+    '\n・博物館最近有什麼活動？...\n'+\
     '\n「美食資訊」'+\
     '\n・附近有什麼吃的？...\n'+\
+    '\n「附近景點」'+\
+    '\n・博物館附近有哪些景點？...\n'+\
     '\n「交通資訊」'+\
     '\n・宜蘭到博物館怎麼走？\n・台北如何到蘭博？...\n\n祝你有個美好的一天。'
     line_bot_api.push_message(user_token,TextSendMessage(text=Text))
@@ -131,12 +149,14 @@ def detect_intent_audio(project_id, session_id, audio_file_path,language_code):
 
     return(response.query_result.query_text,response.query_result.intent.display_name,response.query_result.fulfillment_text)
 
+#****firebase_realtime網址****#
 from firebase import firebase
-firebase = firebase.FirebaseApplication('https://museum-oitrbq.firebaseio.com/', None)
+firebase = firebase.FirebaseApplication('FIREBASE_REALTIME_URL', None)
 
 #****判斷intent之後的動作****#
-def intent_action(content,intent,respond,event):
-
+def intent_action(content,intent,respond,event):  
+        #****若有將資料加入FIREBASE，可取消註解程式碼159~182****#
+        """
         if(intent=='address'): # 問蘭陽博物館地址
            Text = firebase.get('/LanyangMuseum/Address', 'address') + '\n聯絡電話為' + firebase.get('/LanyangMuseum/Address', 'phone')
            line_bot_api.reply_message(
@@ -159,6 +179,27 @@ def intent_action(content,intent,respond,event):
             line_bot_api.reply_message(
                 event.reply_token,
                 TextSendMessage(text=Text))
+        """
+        
+        if(intent=='address'): # 問蘭陽博物館地址
+            respond = respond.replace(',','\n')
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text=respond))
+        elif(intent=='content'): # 問蘭陽博物館的內容
+            respond = respond.replace('#','\n')
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text=respond))
+        elif(intent=='notce'): # 問入關須知
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text=respond))
+        elif(intent=='opentime'): # 問開館時間
+            respond = respond.replace('#','\n')
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text=respond))
         elif(intent=='facility'): # 詢問基礎設施如輪椅 娃娃車 語音導覽 停車場
             if('輪椅' in respond or '娃娃車' in respond):
                 Text = '娃娃車及輪椅可以免費借用，並需抵押有照片之有效證件(如:身份證、健保卡…)\n下午4點過後尚可租借，但必需於下午5點休館前歸還。\n以上物品若損壞遺失須照原價賠償。'
@@ -202,7 +243,7 @@ def intent_action(content,intent,respond,event):
                     event.reply_token,
                     TextSendMessage(text=Text))
             else:
-                Text = '對不起，\n機器人聽不太懂您的意思，能否換一種說法再問一次'
+                Text = '對不起，親\n機器人聽不太懂您的意思，能否換一種說法再問一次'
                 line_bot_api.reply_message(
                     event.reply_token,
                     TextSendMessage(text=Text))
@@ -211,6 +252,9 @@ def intent_action(content,intent,respond,event):
                 text_message = TextSendMessage(text='請選擇您想要了解的食物資訊的類型',
                                        quick_reply=QuickReply(items=[
                                            QuickReplyButton(
+                                               image_url='https://firebasestorage.googleapis.com/v0/b/museumbot-1dc63.appspot.com/o/quickreply%20button%2F%E6%B4%BB%E5%8B%95.png?alt=media&token=c2778ae4-68d7-41e7-8dca-f5622f431066',
+                                               action=MessageAction(label="館內美食", text="獲得館內美食資訊")),
+                                           QuickReplyButton(
                                                image_url='https://firebasestorage.googleapis.com/v0/b/museumbot-1dc63.appspot.com/o/quickreply%20button%2F%E9%A3%9F%E7%89%A9.png?alt=media&token=3cfe7bbc-0c91-4501-b055-758775f0fb38',
                                                action=MessageAction(label="附近美食", text="獲得附近美食資訊"))
                                        ]))
@@ -218,11 +262,10 @@ def intent_action(content,intent,respond,event):
             else:
                 food_nearby(event.source.user_id,respond)
         elif(intent=='price'): # 詢問價格
-            Text = firebase.get('/LanyangMuseum', 'Price')
-            Text = Text.replace('#','\n')
+            respond = respond.replace('#','\n')
             line_bot_api.reply_message(
                 event.reply_token,
-                TextSendMessage(text=Text))
+                TextSendMessage(text=respond))
         elif(intent=='traffic'): # 詢問交通  
             if(len(respond.split('#'))>1):      
                 if(respond.split('#')[0]=='頭城火車站' and respond.split('#')[1]=='蘭陽博物館'):
@@ -284,6 +327,8 @@ def intent_action(content,intent,respond,event):
                     TextSendMessage(text=Text))
             else:
                 sightseeing_nearby(event.source.user_id)
+        elif(intent=='activity'): # 問蘭陽博物館的活動
+            getActivity(event.source.user_id)
         elif(intent=='help'): # 問我能問什麼
             get_help(event.source.user_id)
         elif(intent=='guide'): # 問導覽部分
@@ -321,15 +366,10 @@ def intent_action(content,intent,respond,event):
             else:
                 Text = '您尚未開啟藍芽導覽，請先開啟'
                 line_bot_api.reply_message(event.reply_token,TextSendMessage(text=Text))
-        elif(intent=='Default Fallback Intent'):
-            Text = '對不起，我聽不懂你的問題。'
-            line_bot_api.reply_message(
-                event.reply_token,
-                TextSendMessage(text=Text))
 
 #****計算兩點之間距離****#
 def calcDistance(Lat_A, Lng_A, Lat_B, Lng_B):
-    EARTH_RADIUS = 6378.137;#赤道半徑(單位km)  
+    EARTH_RADIUS = 6378.137;#赤道半径(单位km)  
     radLat1 = radians(Lat_A)
     radLat2 = radians(Lat_B)
     a=radLat1-radLat2
@@ -339,6 +379,117 @@ def calcDistance(Lat_A, Lng_A, Lat_B, Lng_B):
     s = s * EARTH_RADIUS;  
     #s = Math.round(s * 10000d) / 10000d;  
     return s; 
+
+#****取得館內活動資訊給使用者****#
+def getActivity(user_token):
+    activity_list = []
+    users_ref = db.collection('館內互動資訊')
+    docs = users_ref.get()
+    for doc in docs:
+        if len(activity_list) == 10:
+            break
+        else:
+            if('主題展' in str(doc.id)):
+                carouselcolumn = CarouselColumn(
+                    thumbnail_image_url=doc.to_dict()['活動海報'],  # 活動的圖片
+                    title='主題展：%s' % (doc.id.replace('(主題展)','')),  # 電影的名字
+                    text='活動地點:'+doc.to_dict()['活動地點'].strip() +'\n'+ doc.to_dict()['活動時間'].strip(),
+                    actions=[
+                        URITemplateAction(
+                            label='查看詳細資訊',
+                            uri=str(doc.to_dict()['活動網頁'])
+                        ),
+                        PostbackTemplateAction(
+                            label='預約活動提醒',
+                            data='預約活動：'+doc.id.replace('(主題展)','')
+                        ),
+                        URITemplateAction(
+                            label='加入Gogle行事曆',
+                            uri=str(doc.to_dict()['活動預約'])
+                        )
+                    ]
+                )
+                activity_list.append(carouselcolumn)
+            elif('推廣活動' in str(doc.id)):
+                carouselcolumn = CarouselColumn(
+                    thumbnail_image_url=doc.to_dict()['活動海報'],  # 活動的圖片
+                    title='推廣活動：%s' % (doc.id.replace('(推廣活動)','')),  # 電影的名字
+                    text='活動地點:'+doc.to_dict()['活動地點'].strip() +'\n'+ doc.to_dict()['活動時間'].strip(),
+                    actions=[
+                        URITemplateAction(
+                            label='查看詳細資訊',
+                            uri=str(doc.to_dict()['活動網頁'])
+                        ),
+                        PostbackTemplateAction(
+                            label='預約活動提醒',
+                            data='預約活動：'+doc.id.replace('(推廣活動)','')
+                        ),
+                        URITemplateAction(
+                            label='加入Gogle行事曆',
+                            uri=str(doc.to_dict()['活動預約'])
+                        )
+                    ]
+                )
+                activity_list.append(carouselcolumn)
+            elif('音樂' in str(doc.id)):
+                carouselcolumn = CarouselColumn(
+                    thumbnail_image_url=doc.to_dict()['活動海報'],  # 活動的圖片
+                    title=doc.id.replace('(音樂)',''),  # 電影的名字
+                    text='活動費用:'+doc.to_dict()['活動費用'].strip() +'\n'+ doc.to_dict()['活動時間'].strip(),
+                    actions=[
+                        URITemplateAction(
+                            label='查看詳細資訊',
+                            uri=str(doc.to_dict()['活動網頁'])
+                        ),
+                        PostbackTemplateAction(
+                            label='預約活動提醒',
+                            data='預約活動：'+doc.id.replace('(音樂)','')
+                        ),
+                        URITemplateAction(
+                            label='加入Gogle行事曆',
+                            uri=str(doc.to_dict()['活動預約'])
+                        )
+                    ]
+                )
+                activity_list.append(carouselcolumn)
+
+    Carousel_template = CarouselTemplate(
+        columns=activity_list,
+        image_aspect_ratio="rectangle",  # 圖片形狀，一共兩個參數。square指圖片1:1，rectangle指圖片1.5:1
+        image_size="contain"  # 圖片size大小設定，一共兩個參數。cover指圖片充滿畫面，contain指縮小圖片塞到畫面
+    )
+    line_bot_api.push_message(
+        user_token,
+        TemplateSendMessage(alt_text="為您找到了館內的活動資訊", template=Carousel_template)  
+    )
+
+#****取得館內美食資訊給使用者****#
+def get_food_indoor(user_token):
+    food_list = []
+    users_ref = db.collection('館內食物')
+    docs = users_ref.get()
+    for doc in docs:
+        carouselcolumn = CarouselColumn(
+                    thumbnail_image_url=doc.to_dict()['餐廳圖片'],  # 餐廳圖片
+                    title='餐廳名稱：%s' % (doc.id),  # 餐廳的名字
+                    text='營業時間:'+doc.to_dict()['營業時間'].strip() +'\n'+ '聯絡電話:'+doc.to_dict()['聯絡電話'].strip(),
+                    actions=[
+                        PostbackTemplateAction(
+                            label='獲取餐廳位置',
+                            data='餐廳位置'+doc.to_dict()['餐廳位址']
+                        )
+                    ]
+        )
+        food_list.append(carouselcolumn)
+    Carousel_template = CarouselTemplate(
+        columns=food_list,
+        image_aspect_ratio="rectangle",  # 圖片形狀，一共兩個參數。square指圖片1:1，rectangle指圖片1.5:1
+        image_size="contain"  # 圖片size大小設定，一共兩個參數。cover指圖片充滿畫面，contain指縮小圖片塞到畫面
+    )
+    line_bot_api.push_message(
+        user_token,
+        TemplateSendMessage(alt_text="為您找到了館內的食物資訊", template=Carousel_template)  
+    )
 
 #****取得蘭陽博物館附近美食資訊給使用者****#
 def food_nearby(user_token,food_type):
@@ -449,6 +600,59 @@ def food_nearby(user_token,food_type):
             TextSendMessage('對不起，附近沒有您想要搜索的餐廳')
         )
 
+#****取得蘭陽博物館附近景點資訊給使用者****#
+def sightseeing_nearby(user_token):
+    place_name = [] #景點名稱
+
+    users_ref = db.collection("附近景點")
+    docs = users_ref.get()
+    for doc in docs:
+        place_name.append(doc.id)
+
+    line_bot_api.push_message(
+        user_token, TextSendMessage('正在為您搜尋蘭陽博物館附近景點資訊，請稍等片刻...')
+    )
+
+    place_name_R = []
+    movie_num_random = random.sample(range(0, len(place_name)), 5)
+    for num in movie_num_random:
+        place_name_R.append(place_name[num])
+
+    # 宣告儲存橫向捲軸的list
+    column_list = []
+    for lis in range(0, len(place_name_R)):
+        users_ref = db.collection("附近景點").document("%s" % (place_name_R[lis]))
+        doc = users_ref.get()
+
+        lat = doc.to_dict()['景點位置'].split(' ')[0]
+        lon = doc.to_dict()['景點位置'].split(' ')[1]
+        distance = round(calcDistance(24.8687221,121.8303194,float(lat),float(lon)),2)
+
+        carouselcolumn = CarouselColumn(
+            thumbnail_image_url=doc.to_dict()['圖片URL'].strip(),
+            title=place_name_R[lis]+'(距離蘭博'+str(distance)+'公里)',
+            text='主題分類:'+doc.to_dict()['主題分類'] + '\n' + '開放時間:' + doc.to_dict()['開放時間'],
+            actions=[
+                URITemplateAction(
+                    label='詳細資訊',
+                    uri=doc.to_dict()['景點介紹網址'].strip()
+                ),
+                URITemplateAction(
+                    label='導航去這裡玩',
+                    uri='https://www.google.com/maps/dir/?api=1&destination=' + place_name_R[lis].replace(" ","%2C")
+                )
+            ]
+        )
+        column_list.append(carouselcolumn)
+
+    Carousel_template = CarouselTemplate(
+        columns=column_list,
+        image_aspect_ratio="square",  # 圖片形狀，一共兩個參數。square指圖片1:1，rectangle指圖片1.5:1
+        image_size="contain"  # 圖片size大小設定，一共兩個參數。cover指圖片充滿畫面，contain指縮小圖片塞到畫面
+    )
+    line_bot_api.push_message(user_token, TemplateSendMessage(alt_text="為您推薦附近景點",
+                                                              template=Carousel_template))
+
 @app.route("/callback", methods=['POST'])
 def callback():
     # get X-Line-Signature header value
@@ -466,6 +670,7 @@ def callback():
         abort(400)
 
     return 'OK'
+
 #*****使用者加入LineBot時候*****#
 @handler.add(FollowEvent)
 def handle_follow(event):
@@ -625,7 +830,7 @@ def handle_message(event):
                                        ]))
         line_bot_api.push_message(event.source.user_id, text_message)
     else:
-        content, intent, respond = detect_intent_texts('museum-oitrbq','1234',event.message.text,'zh-TW')
+        content, intent, respond = detect_intent_texts('museumbot-1dc63','1234',event.message.text,'zh-TW')
         print(intent,respond)
         intent_action(content,intent,respond,event)
         
@@ -644,11 +849,11 @@ def handle_location_message(event):
             actions=[                              
                 URITemplateAction(
                     label='起始地',
-                    uri='F'+'&destination='+str(lan)+','+str(lon)
+                    uri='https://www.google.com/maps/dir/?api=1&origin=宜蘭博物館'+'&destination='+str(lan)+','+str(lon)
                 ),
                 URITemplateAction(
                     label='目的地',
-                    uri='https://www.google.com/maps/dir/?api=1&origin='+str(lan)+','+str(lon)+'&destination=蘭陽博物館'
+                    uri='https://www.google.com/maps/dir/?api=1&origin='+str(lan)+','+str(lon)+'&destination=宜蘭博物館'
                 ),
                 URITemplateAction(
                     label='重新定位',
@@ -690,9 +895,17 @@ def handle_message(event):
 
     if isinstance(event.message, AudioMessage):
         filename = m4a_to_wav('static/tmp/'+dist_name) #將m4a轉變成wav檔案
-        content, intent, respond = detect_intent_audio('museum-oitrbq','1234',filename,'zh-TW') #利用語音檔案判斷使用者的intent與entity
+        content, intent, respond = detect_intent_audio('museumbot-1dc63','1234',filename,'zh-TW') #利用語音檔案判斷使用者的intent與entity
         print(intent,respond)
         intent_action(content,intent,respond,event)
+        #if(intent=='address'):
+
+    #print(os.path.join('static', 'tmp', dist_name))
+    # line_bot_api.reply_message(
+    #     event.reply_token, [
+    #         TextSendMessage(text='Save content.'),
+    #         TextSendMessage(text=request.host_url + os.path.join('static', 'tmp', dist_name))
+    #     ])
 
 #*****當使用者發送postback的時候不會出現在文字中*****#
 @handler.add(PostbackEvent)
@@ -706,6 +919,47 @@ def handle_postback(event):
         line_bot_api.reply_message(event.reply_token, message)
     elif '我想去吃' in event.postback.data:
         food_nearby(user_id,event.postback.data.replace('我想去吃',''))
+    elif event.postback.data == '獲得導覽資訊':
+        Confirm_template = TemplateSendMessage(
+            alt_text='是否開啟藍芽與Line Beacon',
+            template=ConfirmTemplate(
+                title='是否開啟藍芽與Line Beacon',
+                text='若要使用導覽功能則必須開啟藍芽與Line Beacon,是否同意？\n若點選同意,則請再「隱私設定」中的「提供使用者資料」中開啟Line Beacon',
+                actions=[                              
+                    URITemplateAction(
+                        label='我同意',
+                        uri='line://nv/settings/privacy'
+                    ),
+                    PostbackTemplateAction(
+                        label='我不同意',
+                        data='我不同意開啟藍芽'
+                    )
+                ]
+            )
+        )
+        line_bot_api.reply_message(event.reply_token,Confirm_template)
+    elif event.postback.data == '我不同意開啟藍芽':
+        Text = '如果之後想要開啟，請再點選導覽按鈕'
+        line_bot_api.reply_message(event.reply_token,TextSendMessage(text=Text))
+    elif '預約活動：' in event.postback.data:
+        Text = '已為您預約'+event.postback.data.replace('預約活動：','')
+        line_bot_api.reply_message(event.reply_token,TextSendMessage(text=Text))
+
+#*****當使用者使用Beacon的時候*****#
+@handler.add(BeaconEvent)
+def handle_beacon_event(event):
+    global beacon_id
+    if event.beacon.hwid == "012cb18b82":#一樓入口的基本介紹
+        beacon_id = "floor1"
+        if event.beacon.type == "enter":#若不判斷enter，當你離開一樓時，Beacon會在送一次
+            msg = "歡迎來到蘭陽博物館\n右前方是售票處及服務台\n若需如廁，請往右走於轉角處的後方\n若攜帶兒童前來，右邊有兒童探索區\n若您覺得想先用餐，餐廳在您的左邊\n祝你有個愉快的體驗!\n蘭陽博物館敬上"
+            line_bot_api.reply_message(event.reply_token,TextSendMessage(text=msg))
+    
+    elif event.beacon.hwid == "012cb80a3c":#二樓入口的基本介紹
+        beacon_id = "floor2"
+        if event.beacon.type == "enter":#若不判斷enter，當你離開一樓時，Beacon會在送一次
+            msg = "歡迎您來到二樓的海之層\n首先印入眼簾的是海洋劇場\n後面有一艘本館最大展品-南風壹號\n兩側還會有掉艚仔、月桃編大索、燒玉式內燃機、鯷鯨等展品\n廁所則是在一旁出口的右手邊"
+            line_bot_api.reply_message(event.reply_token,TextSendMessage(text=msg))
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))
