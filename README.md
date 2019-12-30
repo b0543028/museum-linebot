@@ -1,5 +1,5 @@
 # MuseumBot博物館導覽Line聊天機器人
-本專案設計了一個博物館導覽Line聊天機器人。這個專案主要分成四個部分：
+本專案設計了一個博物館導覽Line聊天機器人。這個專案主要分成五個部分：
 * **<h3>第一部分為Dialogflow部分</h3>**
   * 這部分使用了Google Dialogflow的服務，使用前先至[Dialogflow的網站](https://dialogflow.com/)註冊並創建一個新的項目。  
   * 而*Dialogflow*中的*MuseumBot_Dialogflow.zip*是將我利用蘭陽博物館網站上的QA集訓練的intent以及entities打包下來，如果要使用的話需要到剛剛創建的項目的設定中找到**Export and Import**，並選擇**IMPORT FROM ZIP**將剛剛的zip導入(如圖1)。
@@ -85,3 +85,9 @@
   * 這部分我們利用Django假設網站並結合爬蟲程式到[勁好行的網站](http://e-landbus.tw/eLandBus/RouteQuery.aspx)爬取即時公車資訊。    
   * 我們將程式打包好放在*Realtime Bus Info*檔案中的*django_web_file.7z*中。   
   * 使用者可以按照*Django架設網站並上傳Heroku教學.pdf*將Django放在Heroku上面。
+
+* **<h3>第五部分為ASP.NET MVC網站修改聊天機器人設定</h3>**
+  * 這部份我們利用ASP.NET MVC架構架設一個網站，若聊天機器人中資訊錯誤，或錯誤資訊須回報時，可以利用本網站通報
+  * 開啟MuseumLineBot.sln即可開啟專案(安裝Visual Studio 2017 並且安裝.NET相關套件)
+  * 專案開啟後修改**Controllers/HomeControllers.cs**中 17行 Firebase_Realtime_Url
+  * 系統架構(如圖8)
