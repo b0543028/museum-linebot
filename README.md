@@ -91,3 +91,6 @@
   * 開啟MuseumLineBot.sln即可開啟專案(安裝Visual Studio 2017 並且安裝.NET相關套件)
   * 專案開啟後修改**Controllers/HomeControllers.cs**中 17行 Firebase_Realtime_Url
   * 系統架構(如圖8)
+  
+  ![image](https://github.com/b0543028/museum-linebot/blob/master/Screenshot/%E7%B3%BB%E7%B5%B1%E6%9E%B6%E6%A7%8B.jpg)    
+  <p align="center">圖8</p> 
