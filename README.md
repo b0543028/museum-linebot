@@ -15,7 +15,7 @@
 * **<h3>第二部分為建置LineBot</h3>**  
   * 這部分使用了Line聊天機器人的服務，使用前先至[Line Developer的網站](https://developers.line.biz/en/)註冊並創建一個新的項目。
   * 在*MuseumBot*檔案中的*museum.py*程式裡面需要輸入**CHANNEL_ACCESS_TOKEN**以及**CHANNEL_SECRET**，可以在剛剛創建的項目中找到(如圖3圖4)。
-      
+      - 123
   ![image](https://github.com/ArrowHuang/LineBot-MuseumBot/blob/master/Screenshot/LineBot1.png)    
   <p align="center">圖3</p>   
   
