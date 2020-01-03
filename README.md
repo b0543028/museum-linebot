@@ -93,7 +93,7 @@
   * firebase realtime(如圖8)
   * 系統架構(如圖9)
   
-  ![image](https://github.com/b0543028/museum-linebot/blob/master/Screenshot/%E7%B3%BB%E7%B5%B1%E6%9E%B6%E6%A7%8B.jpg)    
+  ![image](https://github.com/b0543028/Museum-Linebot/blob/master/Screenshot/firebase_realtime.jpg)    
   <p align="center">圖8</p>
   
   ![image](https://github.com/b0543028/museum-linebot/blob/master/Screenshot/%E7%B3%BB%E7%B5%B1%E6%9E%B6%E6%A7%8B.jpg)    
