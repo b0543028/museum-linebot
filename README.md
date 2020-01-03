@@ -90,7 +90,11 @@
   * 這部份我們利用ASP.NET MVC架構架設一個網站，若聊天機器人中資訊錯誤，或錯誤資訊須回報時，可以利用本網站通報
   * 開啟MuseumLineBot.sln即可開啟專案(安裝Visual Studio 2017 並且安裝.NET相關套件)
   * 專案開啟後修改**Controllers/HomeControllers.cs**中 17行 Firebase_Realtime_Url
-  * 系統架構(如圖8)
+  * firebase realtime(如圖8)
+  * 系統架構(如圖9)
   
   ![image](https://github.com/b0543028/museum-linebot/blob/master/Screenshot/%E7%B3%BB%E7%B5%B1%E6%9E%B6%E6%A7%8B.jpg)    
-  <p align="center">圖8</p> 
+  <p align="center">圖8</p>
+  
+  ![image](https://github.com/b0543028/museum-linebot/blob/master/Screenshot/%E7%B3%BB%E7%B5%B1%E6%9E%B6%E6%A7%8B.jpg)    
+  <p align="center">圖9</p> 
