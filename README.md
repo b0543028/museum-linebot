@@ -76,7 +76,7 @@
   * 這部分使用了Google Firebase的服務，使用前先至[Firebase的網站](https://firebase.google.com/)註冊並創建一個新的項目。 
   * 創建完新的項目之後到*設定/使用者權限/服務帳戶*中產生新的私密金鑰(如圖7)，並在*MuseumBot*檔案中的*museum.py*程式裡面輸入**FIREBASE_API_KEY**。
   * 利用Firebase製作一個資料讀取與儲存的功能。
-  * 將MuseumBot/firebase_realtime.json這份資料匯入Firebase_realtime中
+  * 將**MuseumBot/firebase_realtime.json**這份資料匯入Firebase_realtime中
   * 有什麼疑問可以參考[Firebase的說明文件](https://firebase.google.com/docs)  
      
   ![image](https://github.com/ArrowHuang/LineBot-MuseumBot/blob/master/Screenshot/Firebase.png)    
@@ -93,7 +93,7 @@
   * 專案開啟後，請至管理Nuget套件將套件裝上(如圖8)
   * 修改**Controllers/HomeControllers.cs**中 16行的 firebase_url
   * 後台修改與聊天機器人關聯的部分請參考**MuseumBot/museum.py**中的158行
-  * firebase realtime(如圖9)
+  * 上傳json後的firebase realtime圖，上傳的檔案位於**MuseumBot/firebase_realtime.json**(如圖9)
   * 系統架構(如圖10)
   
   ![image](https://github.com/b0543028/Museum-Linebot/blob/master/Screenshot/github_file.png)    
