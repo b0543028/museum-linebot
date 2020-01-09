@@ -1,0 +1,101 @@
+﻿
+@{
+    ViewBag.Title = "問題回報";
+}
+
+<h2>問題回報</h2>
+
+@using (Html.BeginForm("UploadProblem", "Home"))
+{
+    <div class="Data-Content">
+        <div class="Data-Title">
+            <div class="AlignRight">
+                <label for="txt_name">問題描述：</label><br />
+            </div>
+        </div>
+        <div class="Data-Items">
+            @Html.TextArea("ProblemDescription", "", new { style = "width:400px;height:50px" })<br />
+            <input type="submit" class="btn btn-success" style="margin:10px;padding:0px;width:100px;" value="確認" />
+        </div>
+    </div>
+}
+
+<button class="btn btn-basic" id="Btn" style="padding:2px">顯示/隱藏 問題資料</button>
+
+<div id="DataArea" style="background-color:azure">
+    <font size="3">
+        <table class="table table-bordered" style="word-break:break-all;">
+            @foreach (var Item in ViewBag.data)
+            {
+                <tr>
+                    <td>@Item</td>
+                    <td style="text-align:center" width="30%">
+                        @using (Html.BeginForm("SolveProblem", "Home"))
+                        {
+                            <input style="display:none" value="@Item" name="Help" />
+                            <input type="submit" class="btn btn-primary" style="padding:0px; width:100px;" value="已解決" />
+                        }
+                        @using (Html.BeginForm("DeleteProblem", "Home"))
+                        {
+                            <input style="display:none" value="@Item" name="Help" />
+                            <input type="submit" class="btn btn-danger" style="padding:0px; width:100px;" value="刪除" />
+                        }
+                    </td>
+                </tr>
+            }
+        </table>
+    </font>
+</div>
+<br>
+<br>
+<button class="btn btn-basic" id="Btn2" style="padding:2px">顯示/隱藏 已解決問題</button>
+
+<div id="DataArea2" style="background-color:azure">
+    <font size="3">
+        <table class="table table-bordered">
+            @foreach (var Item in ViewBag.data1)
+            {
+                <tr>
+                    <td>@Item</td>
+                    <td style="text-align:center" width="30%">
+                        @using (Html.BeginForm("DeleteSolveProblem", "Home"))
+                        {
+                            <input style="display:none" value="@Item" name="Help" />
+                            <input type="submit" class="btn btn-danger" style="padding:0px; width:100px;" value="刪除" />
+                        }
+                    </td>
+                </tr>
+            }
+        </table>
+    </font>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#DataArea").hide();
+        $("#DataArea2").hide();
+        $("#Btn").click(function () {
+            $("#DataArea").slideToggle();
+        });
+        $("#Btn2").click(function () {
+            $("#DataArea2").slideToggle();
+        });
+    });
+</script>
+
+<style type="text/css">
+    .Data-Content {
+        width: 100%; /* 表單寬度 */
+        line-height: 40px;
+    }
+
+    .Data-Title {
+        float: left;
+        /*width: 25%;*/ /* Label寬度，視情況調整 */
+        /*margin-right: 20px;*/
+    }
+
+    .AlignRight {
+        text-align: right;
+    }
+</style>

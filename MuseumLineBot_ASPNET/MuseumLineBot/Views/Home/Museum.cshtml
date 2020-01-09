@@ -1,0 +1,46 @@
+﻿
+@{
+    ViewBag.Title = "資訊修改";
+}
+
+<h2>資訊修改</h2>
+
+<h3>位置和電話</h3>
+@using (Html.BeginForm("UploadMuseum", "Home"))
+{
+    <div class="Data-Content">
+        <div class="Data-Title">
+            <div class="AlignRight">
+                <label for="txt_name">地址：</label><br />
+                <label for="txt_birth">連絡電話：</label><br />
+            </div>
+        </div>
+        <div class="Data-Items">
+            @Html.TextArea("MuseumAddress", (string)@ViewBag.MuseumAddress, new { style = "width:100%; word-break:break-all" })<br />
+            @Html.TextArea("MuseumPhone", (string)@ViewBag.MuseumPhone, new { style = "width:500px" })<br />
+            <input type="submit" class="btn btn-success" style="margin:10px;padding:0px;width:100px;" value="更新" />
+        </div>
+    </div>
+}
+
+<style type="text/css">
+    .Data-Content {
+        width: 100%; /* 表單寬度 */
+        line-height: 40px;
+    }
+
+    .Data-Title {
+        float: left;
+        /*width: 25%;*/ /* Label寬度，視情況調整 */
+        /*margin-right: 20px;*/
+    }
+
+    /*.Data-Items {
+        float: left;
+        width: 25%;
+    }*/
+
+    .AlignRight {
+        text-align: right;
+    }
+</style>
