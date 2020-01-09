@@ -155,8 +155,7 @@ firebase = firebase.FirebaseApplication('FIREBASE_REALTIME_URL', None)
 
 #****判斷intent之後的動作****#
 def intent_action(content,intent,respond,event):  
-        #****若有將資料加入FIREBASE，可取消註解程式碼159~182****#
-        """
+        #****若沒將firebase_realtime.json匯入FIREBASE，可將159~180換成183~201，但會無法使用後台修改功能****#
         if(intent=='address'): # 問蘭陽博物館地址
            Text = firebase.get('/LanyangMuseum/Address', 'address') + '\n聯絡電話為' + firebase.get('/LanyangMuseum/Address', 'phone')
            line_bot_api.reply_message(
@@ -179,8 +178,8 @@ def intent_action(content,intent,respond,event):
             line_bot_api.reply_message(
                 event.reply_token,
                 TextSendMessage(text=Text))
-        """
         
+        """
         if(intent=='address'): # 問蘭陽博物館地址
             respond = respond.replace(',','\n')
             line_bot_api.reply_message(
@@ -200,6 +199,7 @@ def intent_action(content,intent,respond,event):
             line_bot_api.reply_message(
                 event.reply_token,
                 TextSendMessage(text=respond))
+        """
         elif(intent=='facility'): # 詢問基礎設施如輪椅 娃娃車 語音導覽 停車場
             if('輪椅' in respond or '娃娃車' in respond):
                 Text = '娃娃車及輪椅可以免費借用，並需抵押有照片之有效證件(如:身份證、健保卡…)\n下午4點過後尚可租借，但必需於下午5點休館前歸還。\n以上物品若損壞遺失須照原價賠償。'
