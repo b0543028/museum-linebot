@@ -53,7 +53,7 @@ soupsieve==1.9.1
 SpeechRecognition==3.8.1
 sseclient==0.0.24
 uritemplate==3.0.0
-urllib3==1.25.3
+urllib3==1.26.5
 wavio==0.0.4
 Werkzeug==0.15.4
 zope.interface==4.6.0
