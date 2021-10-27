@@ -40,7 +40,6 @@ protobuf==3.8.0
 pyasn1==0.4.5
 pyasn1-modules==0.2.5
 pycparser==2.19
-pycrypto==2.6.1
 pydub==0.23.1
 python-jwt==3.2.5
 pytz==2019.1
