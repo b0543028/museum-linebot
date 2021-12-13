@@ -32,7 +32,7 @@ itsdangerous==1.1.0
 Jinja2==2.11.3
 liffpy==0.0.1a3
 line-bot-sdk==1.10.0
-lxml==4.6.3
+lxml==4.6.5
 MarkupSafe==1.1.1
 msgpack==0.6.1
 numpy==1.16.4
