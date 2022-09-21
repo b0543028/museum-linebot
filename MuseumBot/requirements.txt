@@ -41,7 +41,7 @@ pyasn1==0.4.5
 pyasn1-modules==0.2.5
 pycparser==2.19
 pydub==0.23.1
-python-jwt==3.2.5
+python-jwt==3.3.4
 pytz==2019.1
 requests==2.22.0
 requests-toolbelt==0.9.1
