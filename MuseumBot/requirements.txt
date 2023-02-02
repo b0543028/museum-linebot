@@ -54,5 +54,5 @@ sseclient==0.0.24
 uritemplate==3.0.0
 urllib3==1.26.5
 wavio==0.0.4
-Werkzeug==0.15.4
+Werkzeug==0.15.5
 zope.interface==4.6.0
